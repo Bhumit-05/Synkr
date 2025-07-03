@@ -21,7 +21,7 @@ const YT_SCOPES = [
 ];
 
 
-// Step 1: Redirect to YouTube login
+// Redirect to YouTube login
 router.get('/login', (req, res) => {
     const qs = querystring.stringify({
         client_id: GOOGLE_CLIENT_ID,
@@ -35,12 +35,12 @@ router.get('/login', (req, res) => {
     res.redirect(`https://accounts.google.com/o/oauth2/v2/auth?${qs}`);
 });
 
-// Step 2: Handle callback and save tokens to DB
+// Handle callback and save tokens to DB
 router.get('/callback', async (req, res) => {
     const { code } = req.query;
 
     try {
-        // Step 1: Exchange code for tokens
+        // Exchange code for tokens
         const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
             method: 'POST',
             headers: {
@@ -65,7 +65,7 @@ router.get('/callback', async (req, res) => {
             return res.status(400).send('Access token missing');
         }
 
-        // Step 2: Fetch user info
+        // Fetching user info
         const userInfoRes = await fetch('https://openidconnect.googleapis.com/v1/userinfo', {
             headers: {
                 Authorization: `Bearer ${access_token}`,
@@ -80,19 +80,24 @@ router.get('/callback', async (req, res) => {
 
         const { sub: id, email } = await userInfoRes.json();
 
-        // Step 3: Save user in DB
+        // Save user in DB
         await youtubeUser.findOneAndUpdate(
             { youtubeId: id },
             {
                 youtubeId: id,
-                email,
+                email : email,
                 youtubeAccessToken: access_token,
                 youtubeRefreshToken: refresh_token,
             },
             { upsert: true, new: true }
         );
 
-        res.send({ access_token, refresh_token, user: { id, email } });
+        // res.send({
+        //     access_token : access_token,
+        //     refresh_token: refresh_token
+        // })
+        const redirectUrl = `http://localhost:5173/youtube/callback?access_token=${access_token || 'none'}&refresh_token=${refresh_token || 'none'}`;
+        res.redirect(redirectUrl)
 
     } catch (err) {
         console.error('YouTube OAuth error:', err.message);
@@ -101,7 +106,7 @@ router.get('/callback', async (req, res) => {
 });
 
 
-// Step 3: Refresh access token using refresh token
+// Refreshing access token using refresh token
 router.post('/refresh', async (req, res) => {
     const { refreshToken } = req.body;
 
