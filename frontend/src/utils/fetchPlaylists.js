@@ -12,7 +12,7 @@ export const fetchYoutubePlaylists = async (youtubeToken) => {
     return data;
   } catch (err) {
     console.error('YouTube fetch error:', err);
-    return null;
+    return [];
   }
 };
 

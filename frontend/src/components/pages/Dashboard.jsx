@@ -25,10 +25,10 @@ const Dashboard = () => {
     }
 
     if (youtubeToken) {
-      const playlists = await fetchYoutubePlaylists(youtubeToken);
+      const playlists = await fetchYoutubePlaylists(youtubeToken); // ✅ Now sends token correctly
       setYoutubePlaylists(playlists);
     }
-  }
+  };
 
   useEffect(() => {
     fetchPlaylists();
@@ -99,7 +99,7 @@ const Dashboard = () => {
         <div className="bg-slate-800/60 backdrop-blur-md rounded-2xl p-6 shadow-xl border border-slate-700 transition hover:shadow-2xl h-fit">
           <h3 className="text-2xl font-light mb-4 text-green-400">Spotify Playlists</h3>
           <ul className="bg-slate-800/60 backdrop-blur-md rounded-2xl p-6 shadow-xl border border-slate-700 min-h-[28rem]">
-            {spotifyPlaylists.map((p) => (
+            {(spotifyPlaylists || []).map((p) => (
               <li key={p.id}>
                 <PlaylistCard
                   id={p.id}
@@ -127,7 +127,7 @@ const Dashboard = () => {
         <div className="bg-slate-800/60 backdrop-blur-md rounded-2xl p-6 shadow-xl border border-slate-700 transition hover:shadow-2xl">
           <h3 className="text-2xl font-light mb-4 text-red-400">YouTube Music Playlists</h3>
           <ul className="bg-slate-800/60 backdrop-blur-md rounded-2xl p-6 shadow-xl border border-slate-700 min-h-[28rem]">
-            {youtubePlaylists.map((p) => (
+            {(youtubePlaylists || []).map((p) => (
               <li key={p.id}>
                 <PlaylistCard
                   id={p.id}
@@ -140,7 +140,8 @@ const Dashboard = () => {
                     );
                   }}
                   selected={p.id === selectedYouTube}
-                  accentColor="ring-red-500"/>
+                  accentColor="ring-red-500"
+                />
               </li>
             ))}
           </ul>
