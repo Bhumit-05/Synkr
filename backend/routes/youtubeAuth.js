@@ -11,8 +11,12 @@ const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 const GOOGLE_REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI;
 
 const YT_SCOPES = [
-    'https://www.googleapis.com/auth/youtube.force-ssl', // securely get and manage
+  'https://www.googleapis.com/auth/youtube.force-ssl',
+  'openid',
+  'email',
+  'profile',
 ];
+
 
 // Redirecting to YouTube login
 router.get('/login', (req, res) => {
