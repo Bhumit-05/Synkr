@@ -20,7 +20,7 @@ const Home = () => {
 
       if (spotifyToken) {
         try {
-          const res = await fetch('http://localhost:4000/spotify/me', {
+          const res = await fetch('https://synkr-vtpk.onrender.com/spotify/me', {
             headers: {
               Authorization: `Bearer ${spotifyToken}`,
             },
@@ -34,7 +34,7 @@ const Home = () => {
 
       if (youtubeToken) {
         try {
-          const res = await fetch('http://localhost:4000/youtube/userinfo', {
+          const res = await fetch('https://synkr-vtpk.onrender.com/youtube/userinfo', {
             headers: {
               Authorization: `Bearer ${youtubeToken}`,
             },
@@ -88,7 +88,7 @@ const Home = () => {
             </>
           ) : (
             <a
-              href="http://localhost:4000/spotifyAuth/login?show_dialog=true"
+              href="https://synkr-vtpk.onrender.com/spotifyAuth/login?show_dialog=true"
               className="px-6 py-2 w-full text-center bg-green-500/90 hover:bg-green-600 text-white font-medium rounded-xl transition cursor-pointer">
               Login with Spotify
             </a>
@@ -113,7 +113,7 @@ const Home = () => {
             </div>
           ) : (
             <a
-              href="http://localhost:4000/youtubeAuth/login"
+              href="https://synkr-vtpk.onrender.com/youtubeAuth/login"
               className="px-6 py-2 w-full text-center bg-red-500 hover:bg-red-600 text-white font-medium rounded-xl transition">
               Login with YouTube
             </a>

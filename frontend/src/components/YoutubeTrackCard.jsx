@@ -14,7 +14,7 @@ const YoutubeTrackCard = ({ track, index }) => {
     }
 
     try {
-        const res = await fetch("http://localhost:4000/youtube/deleteTrack", {
+        const res = await fetch("https://synkr-vtpk.onrender.com/youtube/deleteTrack", {
             method: "DELETE",
             headers: {
             "Content-Type": "application/json",

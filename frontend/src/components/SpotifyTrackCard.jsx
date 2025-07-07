@@ -8,7 +8,7 @@ const SpotifyTrackCard = ({ track, index, playlistId }) => {
   const handleRemove = async () => {
     try {
       const token = await refreshSpotifyToken();
-      const res = await fetch("http://localhost:4000/spotify/deleteTrack", {
+      const res = await fetch("https://synkr-vtpk.onrender.com/spotify/deleteTrack", {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

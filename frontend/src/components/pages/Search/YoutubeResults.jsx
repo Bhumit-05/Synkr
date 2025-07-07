@@ -24,7 +24,7 @@ const YouTubeResults = ({ tracks }) => {
   const handleSelectPlaylist = async (playlistId) => {
     const token = await refreshYouTubeToken();
     try {
-      await fetch('http://localhost:4000/youtube/addToPlaylist', {
+      await fetch('https://synkr-vtpk.onrender.com/youtube/addToPlaylist', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',

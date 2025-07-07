@@ -16,12 +16,12 @@ const TrackResults = ({ keyword }) => {
         const youtubeToken = await refreshYouTubeToken();
 
         const [spotifyRes, youtubeRes] = await Promise.all([
-          fetch(`http://localhost:4000/spotify/search?query=${encodeURIComponent(keyword)}`, {
+          fetch(`https://synkr-vtpk.onrender.com/spotify/search?query=${encodeURIComponent(keyword)}`, {
             headers: {
               'Authorization': `Bearer ${spotifyToken}`,
             },
           }),
-          fetch(`http://localhost:4000/youtube/search?query=${encodeURIComponent(keyword)}`, {
+          fetch(`https://synkr-vtpk.onrender.com/youtube/search?query=${encodeURIComponent(keyword)}`, {
             headers: {
               'Authorization': `Bearer ${youtubeToken}`,
             },

@@ -63,7 +63,7 @@ router.get('/callback', async (req, res) => {
         const data = await tokenResponse.json();
         const { access_token, refresh_token } = data;
 
-        const redirectUrl = `http://localhost:5173/spotify/callback?access_token=${access_token || 'none'}&refresh_token=${refresh_token || 'none'}`;
+        const redirectUrl = `https://synkr-xi.vercel.app/:5173/spotify/callback?access_token=${access_token || 'none'}&refresh_token=${refresh_token || 'none'}`;
         res.redirect(redirectUrl);
     }
     catch (error) {

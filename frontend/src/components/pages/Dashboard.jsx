@@ -41,7 +41,7 @@ const Dashboard = () => {
     setSyncing(true);
     try {
       if (direction === 'spotify-to-youtube') {
-        await fetch('http://localhost:4000/sync/spotify-to-youtube', {
+        await fetch('https://synkr-vtpk.onrender.com/sync/spotify-to-youtube', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -53,7 +53,7 @@ const Dashboard = () => {
         });
         setToast({ message: 'Spotify → YouTube Sync Complete ✅', type: 'success' });
       } else if (direction === 'youtube-to-spotify') {
-        await fetch('http://localhost:4000/sync/youtube-to-spotify', {
+        await fetch('https://synkr-vtpk.onrender.com/sync/youtube-to-spotify', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

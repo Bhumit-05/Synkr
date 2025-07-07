@@ -14,7 +14,7 @@ const Modal = ({ onAction, platform, id }) => {
     if (!token) return;
 
     try {
-        const res = await fetch(`http://localhost:4000/${platform}/deletePlaylist`, {
+        const res = await fetch(`https://synkr-vtpk.onrender.com/${platform}/deletePlaylist`, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'application/json',

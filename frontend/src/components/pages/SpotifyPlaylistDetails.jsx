@@ -20,7 +20,7 @@ const SpotifyPlaylistDetails = () => {
         if (!token) return;
 
         const res = await fetch(
-        `http://localhost:4000/spotify/playlists/${id}/tracks`,
+        `https://synkr-vtpk.onrender.com/spotify/playlists/${id}/tracks`,
         {
             headers: {
             Authorization: `Bearer ${token}`,

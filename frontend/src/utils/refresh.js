@@ -2,7 +2,7 @@ export const refreshSpotifyToken = async () => {
   const refreshToken = localStorage.getItem('spotifyRefreshToken');
   if (!refreshToken) return null;
 
-  const res = await fetch("http://localhost:4000/spotifyAuth/refresh", {
+  const res = await fetch("https://synkr-vtpk.onrender.com/spotifyAuth/refresh", {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ refreshToken })
@@ -22,7 +22,7 @@ export const refreshYouTubeToken = async () => {
   const refreshToken = localStorage.getItem('youtubeRefreshToken');
   if (!refreshToken) return null;
 
-  const res = await fetch("http://localhost:4000/youtubeAuth/refresh", {
+  const res = await fetch("https://synkr-vtpk.onrender.com/youtubeAuth/refresh", {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ refreshToken })

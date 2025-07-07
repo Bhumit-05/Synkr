@@ -20,7 +20,7 @@ const YoutubePlaylistDetails = () => {
         const token = await refreshYouTubeToken();
         if (!token) return;
 
-        const res = await fetch(`http://localhost:4000/youtube/playlists/${id}/tracks`, {
+        const res = await fetch(`https://synkr-vtpk.onrender.com/youtube/playlists/${id}/tracks`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

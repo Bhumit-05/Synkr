@@ -23,7 +23,7 @@ const SpotifyResults = ({ tracks }) => {
   const handleSelectPlaylist = async (playlistId) => {
     const token = await refreshSpotifyToken();
     try {
-      await fetch('http://localhost:4000/spotify/addToPlaylist', {
+      await fetch('https://synkr-vtpk.onrender.com/spotify/addToPlaylist', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',

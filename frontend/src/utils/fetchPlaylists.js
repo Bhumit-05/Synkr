@@ -1,6 +1,6 @@
 export const fetchYoutubePlaylists = async (youtubeToken) => {
   try {
-    const res = await fetch('http://localhost:4000/youtube/playlists', {
+    const res = await fetch('https://synkr-vtpk.onrender.com/youtube/playlists', {
       headers: {
         Authorization: `Bearer ${youtubeToken}`,
       },
@@ -18,7 +18,7 @@ export const fetchYoutubePlaylists = async (youtubeToken) => {
 
 export const fetchSpotifyPlaylist = async (spotifyToken) => {
   try {
-    const res = await fetch('http://localhost:4000/spotify/playlists', {
+    const res = await fetch('https://synkr-vtpk.onrender.com/spotify/playlists', {
       headers: {
         Authorization: `Bearer ${spotifyToken}`,
       },
