@@ -15,13 +15,17 @@ const app = express();
 app.use(express.json());
 
 app.use(cors({
-  origin: 'https://synkr-xi.vercel.app/:5173',
+  origin: 'https://synkr-xi.vercel.app',
   credentials: true,
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 const PORT = process.env.PORT || 4000;
+
+app.get('/', (req, res) => {
+  res.send('Synkr backend running!');
+});
 
 app.use('/spotifyAuth', spotifyAuthRoutes);
 app.use('/spotify', spotifyRoutes);
@@ -30,4 +34,4 @@ app.use('/youtube', youtubeRoutes);
 app.use('/sync', spotifyToYoutubeRoute);
 app.use('/sync', youtubeToSpotifyRoute);
 
-app.listen(PORT);
+app.listen(PORT, '0.0.0.0');
