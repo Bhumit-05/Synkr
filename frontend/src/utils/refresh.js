@@ -8,7 +8,6 @@ export const refreshSpotifyToken = async () => {
     body: JSON.stringify({ refreshToken })
   });
   
-
   if (res.ok) {
     const data = await res.json();
     localStorage.setItem('spotifyAccessToken', data.access_token);

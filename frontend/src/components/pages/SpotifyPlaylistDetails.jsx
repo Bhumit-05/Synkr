@@ -1,8 +1,8 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import Modal from '../Modal';
+import Modal from '../UI/DeletePlaylistModal';
 import SpotifyTrackCard from '../SpotifyTrackCard'
-import { refreshSpotifyToken } from '../../utils/api';
+import { refreshSpotifyToken } from '../../utils/refresh';
 
 const SpotifyPlaylistDetails = () => {
     const { id, PlaylistTitle } = useParams();
@@ -11,7 +11,7 @@ const SpotifyPlaylistDetails = () => {
     const [showModal, setShowModal] = useState(false);
 
     const changeModalState = (state) => {
-        setShowModal(state);
+      setShowModal(state);
     }
 
     const fetchTracks = async () => {
@@ -44,7 +44,7 @@ const SpotifyPlaylistDetails = () => {
     }, [id]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-black to-zinc-900 text-white px-6 py-20">
+    <div className="min-h-screen bg-gradient-to-br from-slate-800 to-black text-white px-6 py-20">
         <div className="mt-20 mb-10 px-4 lg:px-20">
             <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-y-6">
                 {/* Playlist Title */}
@@ -66,21 +66,28 @@ const SpotifyPlaylistDetails = () => {
             </div>
         </div>
 
-      {loading ? (
-        <p className="text-gray-400">Loading tracks...</p>
-      ) : tracks.length === 0 ? (
-        <p className="text-gray-400">No tracks found.</p>
-      ) : (
-        <div className="space-y-6">
-          {tracks.map((item, index) => {
-            const track = item.track;
-            if (!track) return null;
-            return (
-              <SpotifyTrackCard key = {index} track={track} index={index} playlistId={id}/>
-            );
-          })}
-        </div>
-      )}
+        {tracks.length > 0 && (
+          <div className='flex flex-row gap-1 mb-16 mt-5 text-xl ml-20'> 
+            <div className='text-green-500'>{tracks.length}</div>
+            <div>Songs in this playlist</div>
+          </div>
+        )}
+
+        {loading ? (
+          <p className="text-gray-400">Loading tracks...</p>
+        ) : tracks.length === 0 ? (
+          <p className="text-gray-400">No tracks found.</p>
+        ) : (
+          <div className="space-y-6">
+            {tracks.map((item, index) => {
+              const track = item.track;
+              if (!track) return null;
+              return (
+                <SpotifyTrackCard key = {index} track={track} index={index} playlistId={id}/>
+              );
+            })}
+          </div>
+        )}
 
         {showModal && (<Modal onAction={changeModalState} platform="spotify" id={id}/>)}
     </div>

@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 
-// Sync YouTube → Spotify
 router.post('/youtube-to-spotify', async (req, res) => {
     const { youtubeToken, spotifyToken, playlistId, playlistTitle } = req.body;
 
@@ -42,7 +41,7 @@ router.post('/youtube-to-spotify', async (req, res) => {
             }
         }
 
-        // 3. Creating a new Spotify playlist
+        // Creating a new Spotify playlist
         const profileRes = await fetch('https://api.spotify.com/v1/me', {
             headers: { Authorization: `Bearer ${spotifyToken}` }
         });
@@ -64,7 +63,7 @@ router.post('/youtube-to-spotify', async (req, res) => {
         const playlistData = await playlistRes.json();
         const newSpotifyPlaylistId = playlistData.id;
 
-        // 4. Adding tracks
+        // Adding tracks
         if (matchedTrackUris.length > 0) {
             await fetch(`https://api.spotify.com/v1/playlists/${newSpotifyPlaylistId}/tracks`, {
                 method: 'POST',

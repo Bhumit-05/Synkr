@@ -1,7 +1,6 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
-const mongoose = require('mongoose');
 
 const spotifyAuthRoutes = require('./routes/spotifyAuth');
 const spotifyRoutes = require('./routes/spotify');
@@ -31,11 +30,4 @@ app.use('/youtube', youtubeRoutes);
 app.use('/sync', spotifyToYoutubeRoute);
 app.use('/sync', youtubeToSpotifyRoute);
 
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log('Connected to MongoDB');
-    app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
-  })
-  .catch((err) => {
-    console.error('MongoDB connection error:', err);
-  });
+app.listen(PORT);

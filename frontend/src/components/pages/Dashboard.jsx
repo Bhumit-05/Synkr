@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import PlaylistCard from '../PlaylistCard';
-import Spinner from '../Spinner';
-import { refreshSpotifyToken, refreshYouTubeToken } from '../../utils/api';
+import Spinner from '../UI/Spinner';
+import Toaster from '../UI/Toaster';
+import { refreshSpotifyToken, refreshYouTubeToken } from '../../utils/refresh';
+import { fetchSpotifyPlaylist, fetchYoutubePlaylists } from '../../utils/fetchPlaylists';
 
 const Dashboard = () => {
   const [spotifyPlaylists, setSpotifyPlaylists] = useState([]);
@@ -11,46 +13,26 @@ const Dashboard = () => {
   const [selectedSpotifyPlaylist, setSelectedSpotifyPlaylist] = useState(null);
   const [selectedYouTubePlaylist, setSelectedYouTubePlaylist] = useState(null);
   const [syncing, setSyncing] = useState(false);
+  const [toast, setToast] = useState({ message: '', type: '' });
 
   const fetchPlaylists = async () => {
     const spotifyToken = await refreshSpotifyToken();
     const youtubeToken = await refreshYouTubeToken();
 
-    // Fetch Spotify playlists if token is present
     if (spotifyToken) {
-      fetch('http://localhost:4000/spotify/playlists', {
-        headers: {
-          Authorization: `Bearer ${spotifyToken}`,
-        },
-      })
-        .then((res) => {
-          if (!res.ok) throw new Error('Failed to fetch Spotify playlists');
-          return res.json();
-        })
-        .then((data) => setSpotifyPlaylists(data))
-        .catch((err) => console.error('Spotify fetch error:', err));
+      const playlists = await fetchSpotifyPlaylist(spotifyToken);
+      setSpotifyPlaylists(playlists);
     }
 
-    // Fetch YouTube playlists if token is present
     if (youtubeToken) {
-      fetch('http://localhost:4000/youtube/playlists', {
-        headers: {
-          Authorization: `Bearer ${youtubeToken}`,
-        },
-      })
-        .then((res) => {
-          if (!res.ok) throw new Error('Failed to fetch YouTube playlists');
-          return res.json();
-        })
-        .then((data) => setYoutubePlaylists(data))
-        .catch((err) => console.error('YouTube fetch error:', err));
+      const playlists = await fetchYoutubePlaylists(youtubeToken);
+      setYoutubePlaylists(playlists);
     }
   }
 
   useEffect(() => {
     fetchPlaylists();
   }, []);
-
 
   const handleSync = async (direction) => {
     const spotifyToken = await refreshSpotifyToken();
@@ -63,32 +45,30 @@ const Dashboard = () => {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            spotifyToken: spotifyToken,
-            youtubeToken: youtubeToken,
+            spotifyToken,
+            youtubeToken,
             playlistId: selectedSpotify,
-            playlistTitle : selectedSpotifyPlaylist
-          })
+            playlistTitle: selectedSpotifyPlaylist,
+          }),
         });
-        alert('Spotify → YouTube Sync Complete ✅');
-      } 
-      else if (direction === 'youtube-to-spotify') {
+        setToast({ message: 'Spotify → YouTube Sync Complete ✅', type: 'success' });
+      } else if (direction === 'youtube-to-spotify') {
         await fetch('http://localhost:4000/sync/youtube-to-spotify', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            youtubeToken: youtubeToken,
-            spotifyToken: spotifyToken,
+            youtubeToken,
+            spotifyToken,
             playlistId: selectedYouTube,
-            playlistTitle: selectedYouTubePlaylist
-          })
+            playlistTitle: selectedYouTubePlaylist,
+          }),
         });
-        alert('YouTube → Spotify Sync Complete ✅');
+        setToast({ message: 'YouTube → Spotify Sync Complete ✅', type: 'success' });
       }
     } catch (error) {
       console.error(error);
-      alert('Sync failed ❌');
-    }
-    finally{
+      setToast({ message: 'Sync failed ❌', type: 'error' });
+    } finally {
       setSyncing(false);
       setSelectedSpotify(null);
       setSelectedSpotifyPlaylist(null);
@@ -98,32 +78,36 @@ const Dashboard = () => {
     }
   };
 
-  if (syncing) {
-    return (
-      <Spinner/>
-    );
-  }
+  if (syncing) return <Spinner />;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-black to-zinc-900 text-white p-8 font-light">
-      <h2 className="text-4xl font-extralight mb-12 mt-32 text-center tracking-wide">
-        🎵 Your Synced Dashboard
+    <div className="min-h-screen bg-gradient-to-br from-slate-800 to-black text-white p-8 font-light relative">
+      {toast.message && (
+        <Toaster
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast({ message: '', type: '' })}
+        />
+      )}
+
+      <h2 className="text-4xl font-extralight mb-12 mt-[15%] md:mt-[10%] text-center tracking-wide">
+        Your Syncing Dashboard
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-6xl mx-auto">
         {/* Spotify Playlists */}
-        <div className="bg-slate-800/60 backdrop-blur-md rounded-2xl p-6 shadow-xl border border-slate-700 transition hover:shadow-2xl">
+        <div className="bg-slate-800/60 backdrop-blur-md rounded-2xl p-6 shadow-xl border border-slate-700 transition hover:shadow-2xl h-fit">
           <h3 className="text-2xl font-light mb-4 text-green-400">Spotify Playlists</h3>
-          <ul className="bg-slate-800/60 backdrop-blur-md rounded-2xl p-6 shadow-xl border border-slate-700 transition hover:shadow-2xl min-h-[28rem]">
-            {spotifyPlaylists.map(p => (
+          <ul className="bg-slate-800/60 backdrop-blur-md rounded-2xl p-6 shadow-xl border border-slate-700 min-h-[28rem]">
+            {spotifyPlaylists.map((p) => (
               <li key={p.id}>
                 <PlaylistCard
                   id={p.id}
                   platform="spotify"
                   playlist={p}
                   onSelect={() => {
-                    setSelectedSpotify(prev => (prev === p.id ? null : p.id))
-                    setSelectedSpotifyPlaylist(prev => (prev === p.name ? null : p.name))
+                    setSelectedSpotify((prev) => (prev === p.id ? null : p.id));
+                    setSelectedSpotifyPlaylist((prev) => (prev === p.name ? null : p.name));
                   }}
                   selected={p.id === selectedSpotify}
                   accentColor="ring-green-500"
@@ -134,43 +118,42 @@ const Dashboard = () => {
           <button
             onClick={() => handleSync('spotify-to-youtube')}
             className="mt-6 w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg transition disabled:opacity-40 disabled:cursor-not-allowed"
-            disabled={!selectedSpotify}
-          >
+            disabled={!selectedSpotify}>
             Sync to YouTube ⏩
           </button>
         </div>
 
         {/* YouTube Playlists */}
         <div className="bg-slate-800/60 backdrop-blur-md rounded-2xl p-6 shadow-xl border border-slate-700 transition hover:shadow-2xl">
-          <h3 className="text-2xl font-light mb-4 text-red-400">YouTube Playlists</h3>
-          <ul className="bg-slate-800/60 backdrop-blur-md rounded-2xl p-6 shadow-xl border border-slate-700 transition hover:shadow-2xl min-h-[28rem]">
-            {youtubePlaylists.map(p => (
+          <h3 className="text-2xl font-light mb-4 text-red-400">YouTube Music Playlists</h3>
+          <ul className="bg-slate-800/60 backdrop-blur-md rounded-2xl p-6 shadow-xl border border-slate-700 min-h-[28rem]">
+            {youtubePlaylists.map((p) => (
               <li key={p.id}>
                 <PlaylistCard
                   id={p.id}
                   platform="youtube"
-                  playlist = {p}
+                  playlist={p}
                   onSelect={() => {
-                    setSelectedYouTube(prev => (prev === p.id ? null : p.id));
-                    setSelectedYouTubePlaylist(prev => (prev === p.snippet.title ? null : p.snippet.title));
+                    setSelectedYouTube((prev) => (prev === p.id ? null : p.id));
+                    setSelectedYouTubePlaylist((prev) =>
+                      prev === p.snippet.title ? null : p.snippet.title
+                    );
                   }}
                   selected={p.id === selectedYouTube}
-                  accentColor="ring-red-500"
-                />
+                  accentColor="ring-red-500"/>
               </li>
             ))}
           </ul>
           <button
             onClick={() => handleSync('youtube-to-spotify')}
             className="mt-6 w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg transition disabled:opacity-40 disabled:cursor-not-allowed"
-            disabled={!selectedYouTube}
-          >
+            disabled={!selectedYouTube}>
             Sync to Spotify ⏪
           </button>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default Dashboard;

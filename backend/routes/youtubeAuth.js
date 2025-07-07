@@ -1,7 +1,6 @@
 const express = require('express');
 const querystring = require('querystring');
 const dotenv = require('dotenv');
-const { youtubeUser } = require('../models/User');
 
 dotenv.config();
 
@@ -12,16 +11,10 @@ const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 const GOOGLE_REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI;
 
 const YT_SCOPES = [
-    'https://www.googleapis.com/auth/youtube.readonly',
-    'https://www.googleapis.com/auth/youtube',
-    'https://www.googleapis.com/auth/youtube.force-ssl',
-    'openid',
-    'email',
-    'profile'
+    'https://www.googleapis.com/auth/youtube.force-ssl', // securely get and manage
 ];
 
-
-// Redirect to YouTube login
+// Redirecting to YouTube login
 router.get('/login', (req, res) => {
     const qs = querystring.stringify({
         client_id: GOOGLE_CLIENT_ID,
@@ -35,12 +28,11 @@ router.get('/login', (req, res) => {
     res.redirect(`https://accounts.google.com/o/oauth2/v2/auth?${qs}`);
 });
 
-// Handle callback and save tokens to DB
+// Handling callback and exchange code for tokens
 router.get('/callback', async (req, res) => {
     const { code } = req.query;
 
     try {
-        // Exchange code for tokens
         const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
             method: 'POST',
             headers: {
@@ -65,37 +57,6 @@ router.get('/callback', async (req, res) => {
             return res.status(400).send('Access token missing');
         }
 
-        // Fetching user info
-        const userInfoRes = await fetch('https://openidconnect.googleapis.com/v1/userinfo', {
-            headers: {
-                Authorization: `Bearer ${access_token}`,
-            },
-        });
-
-        if (!userInfoRes.ok) {
-            const errorData = await userInfoRes.text();
-            console.error('Failed to fetch user info:', errorData);
-            return res.status(500).send('Failed to fetch user info');
-        }
-
-        const { sub: id, email } = await userInfoRes.json();
-
-        // Save user in DB
-        await youtubeUser.findOneAndUpdate(
-            { youtubeId: id },
-            {
-                youtubeId: id,
-                email : email,
-                youtubeAccessToken: access_token,
-                youtubeRefreshToken: refresh_token,
-            },
-            { upsert: true, new: true }
-        );
-
-        // res.send({
-        //     access_token : access_token,
-        //     refresh_token: refresh_token
-        // })
         const redirectUrl = `http://localhost:5173/youtube/callback?access_token=${access_token || 'none'}&refresh_token=${refresh_token || 'none'}`;
         res.redirect(redirectUrl)
 
@@ -132,17 +93,6 @@ router.post('/refresh', async (req, res) => {
 
         const data = await response.json();
         const { access_token } = data;
-
-        // Update user in DB
-        const user = await youtubeUser.findOneAndUpdate(
-            { youtubeRefreshToken: refreshToken },
-            { youtubeAccessToken: access_token },
-            { new: true }
-        );
-
-        if (!user) {
-            return res.status(404).json({ error: 'User not found' });
-        }
 
         res.send({ access_token });
 

@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 
-// Syncing Spotify playlist to YouTube
 router.post('/spotify-to-youtube', async (req, res) => {
     const { spotifyToken, youtubeToken, playlistId, playlistTitle } = req.body;
 
@@ -10,7 +9,6 @@ router.post('/spotify-to-youtube', async (req, res) => {
     }
 
     try {
-
         // Getting Spotify tracks
         const spotifyTracksRes = await fetch(
         `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,{
@@ -34,8 +32,7 @@ router.post('/spotify-to-youtube', async (req, res) => {
 
         // Creating a new YouTube playlist
         const ytCreateRes = await fetch(
-        'https://www.googleapis.com/youtube/v3/playlists?part=snippet,status',
-        {
+        'https://www.googleapis.com/youtube/v3/playlists?part=snippet,status',{
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${youtubeToken}`,
@@ -50,8 +47,7 @@ router.post('/spotify-to-youtube', async (req, res) => {
                     privacyStatus: 'private',
                 },
             }),
-        }
-        );
+        });
 
         if (!ytCreateRes.ok) {
             const errData = await ytCreateRes.json();

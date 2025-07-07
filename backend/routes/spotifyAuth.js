@@ -1,7 +1,6 @@
 const express = require('express');
 const querystring = require('querystring');
 const dotenv = require('dotenv');
-const { spotifyUser } = require('../models/User');
 
 dotenv.config();
 
@@ -11,9 +10,9 @@ const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
 const CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
 const REDIRECT_URI = process.env.SPOTIFY_REDIRECT_URI;
 
-// Redirect to Spotify login
+// Redirecting to Spotify login
 router.get('/login', (req, res) => {
-    // scope -> which user's data will be accessible by backend
+    // scope -> which user's data will be accessible by my backend
     const scope = [
         'playlist-read-private',
         'playlist-read-collaborative',
@@ -29,14 +28,14 @@ router.get('/login', (req, res) => {
             response_type: 'code',
             client_id: CLIENT_ID,
             scope: scope,
+            show_dialog: 'true',
             redirect_uri: REDIRECT_URI,
         });
 
     res.redirect(authUrl);
 });
 
-
-// Handle callback and exchange code for tokens
+// Handling callback and exchange code for tokens
 router.get('/callback', async (req, res) => {
     const code = req.query.code || null;
 
@@ -64,38 +63,6 @@ router.get('/callback', async (req, res) => {
         const data = await tokenResponse.json();
         const { access_token, refresh_token } = data;
 
-        // Fetch user profile using access_token
-        const userResponse = await fetch('https://api.spotify.com/v1/me', {
-            headers: {
-                Authorization: `Bearer ${access_token}`,
-            },
-        });
-
-        if (!userResponse.ok) {
-            const errorData = await userResponse.text();
-            console.error('Error fetching user profile:', errorData);
-            return res.status(500).send('Failed to fetch user profile');
-        }
-
-        const userInfo = await userResponse.json();
-        const { id, email } = userInfo;
-
-        // Upsert
-        await spotifyUser.findOneAndUpdate(
-        { spotifyId: id },
-        {
-            spotifyId: id,
-            email : email,
-            accessToken: access_token,
-            refreshToken: refresh_token,
-        },
-        { upsert: true, new: true }
-        );
-
-        // res.send({
-        //     access_token : access_token,
-        //     refresh_token: refresh_token
-        // })
         const redirectUrl = `http://localhost:5173/spotify/callback?access_token=${access_token || 'none'}&refresh_token=${refresh_token || 'none'}`;
         res.redirect(redirectUrl);
     }
@@ -105,9 +72,7 @@ router.get('/callback', async (req, res) => {
     }
 });
 
-
-
-// Refresh token
+// Refresh token endpoint
 router.post('/refresh', async (req, res) => {
     const { refreshToken } = req.body;
 
@@ -133,17 +98,6 @@ router.post('/refresh', async (req, res) => {
 
         const data = await response.json();
         const { access_token } = data;
-
-        // Updating access_token in MongoDB
-        const user = await spotifyUser.findOneAndUpdate(
-        { refreshToken: refreshToken },
-        { accessToken: access_token },
-        { new: true }
-        );
-
-        if (!user) {
-        return res.status(404).json({ error: 'User not found' });
-        }
 
         res.send({ access_token });
     } 
