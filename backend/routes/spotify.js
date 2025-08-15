@@ -7,7 +7,7 @@ router.get('/me', async (req, res) => {
 
     try {
         const response = await fetch('https://api.spotify.com/v1/me', {
-        headers: { Authorization: `Bearer ${token}` },
+            headers: { Authorization: `Bearer ${token}` },
         });
 
         if (!response.ok) return res.status(500).json({ error: 'Failed to fetch Spotify user info' });
@@ -34,6 +34,8 @@ router.get('/playlists', async (req, res) => {
         });
 
         if (!response.ok) {
+            const text = await response.text();
+            console.log(text);
             const errorData = await response.json();
             console.error('Error fetching playlists:', errorData);
             return res.status(response.status).json({ error: 'Failed to fetch playlists' });

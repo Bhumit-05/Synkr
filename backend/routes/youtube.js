@@ -163,7 +163,7 @@ router.get('/search', async (req, res) => {
     return res.status(400).json({ error: 'Missing query or token' });
   }
 
-  const searchUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=10&q=${encodeURIComponent(query)}`;
+  const searchUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&order=viewCount&maxResults=10&q=${encodeURIComponent(query)}`;
 
   try {
     const response = await fetch(searchUrl, {
