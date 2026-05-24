@@ -24,15 +24,15 @@ const SpotifyTrackCard = ({ track, index, playlistId }) => {
 
       if (!res.ok) {
         console.error('Failed to delete track:', data.error);
-        setToast({ message: "Track deletion failed ❌", type: "error" });
+        setToast({ message: "Track deletion failed ", type: "error" });
         return;
       }
 
-      setToast({ message: "Track deleted ✅", type: "success" });
+      setToast({ message: "Track deleted", type: "success" });
       setTimeout(() => window.location.reload(), 1000); // wait for toast to show
     } catch (err) {
       console.error("Error deleting track:", err.message);
-      setToast({ message: "Something went wrong ❌", type: "error" });
+      setToast({ message: "Something went wrong", type: "error" });
     }
   };
 
@@ -81,7 +81,7 @@ const SpotifyTrackCard = ({ track, index, playlistId }) => {
 
         <button
             onClick={handleRemove}
-            className="bg-red-500 hover:bg-red-600 text-white h-fit my-auto mx-4 px-4 py-2 rounded-xl transition">
+            className="bg-red-500 hover:bg-red-600 text-white h-fit my-auto mx-4 px-4 py-2 rounded-xl transition hover:cursor-pointer">
             Remove
         </button>
       </div>

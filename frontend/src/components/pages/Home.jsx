@@ -74,8 +74,8 @@ const Home = () => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
         {/* Spotify Card */}
-        <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 shadow-xl flex flex-col items-center w-[260px] hover:shadow-2xl transition-all">
-          <img src={SPOTIFY_LOGO} alt="Spotify" className="w-32 mb-6" />
+        <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 shadow-xl flex flex-col items-center w-[260px] hover:shadow-2xl transition-all ">
+          <img src={SPOTIFY_LOGO} alt="Spotify" className="w-40 h-fit mt-[-32px]" />
           {spotifyLoggedIn ? (
             <>
               <p className="text-sm text-green-300 mb-1">Logged in to Spotify as</p>
@@ -114,7 +114,7 @@ const Home = () => {
           ) : (
             <a
               href="https://synkr-vtpk.onrender.com/youtubeAuth/login"
-              className="px-6 py-2 w-full text-center bg-red-500 hover:bg-red-600 text-white font-medium rounded-xl transition">
+              className="px-6 py-2 mt-2.5 w-full text-center bg-red-500 hover:bg-red-600 text-white font-medium rounded-xl transition">
               Login with YouTube
             </a>
           )}

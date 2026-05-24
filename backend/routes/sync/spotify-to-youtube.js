@@ -11,7 +11,7 @@ router.post('/spotify-to-youtube', async (req, res) => {
     try {
         // Getting Spotify tracks
         const spotifyTracksRes = await fetch(
-        `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,{
+        `https://api.spotify.com/v1/playlists/${playlistId}/items`,{
             headers: {
                 Authorization: `Bearer ${spotifyToken}`,
             },

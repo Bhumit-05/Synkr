@@ -71,13 +71,13 @@ const SpotifyResults = ({ tracks }) => {
                       href={track.external_urls.spotify}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="px-3 py-2 w-[48%] bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg transition">
+                      className="text-center px-3 py-2 w-[48%] bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg transition">
                       🎧 Listen
                     </a>
                   )}
                   <button
                     onClick={() => handleAddClick(track)}
-                    className="px-3 py-2 w-[48%] bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition">
+                    className="hover:cursor-pointer px-3 py-2 w-[48%] bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition">
                     + Playlist
                   </button>
                 </div>

@@ -65,7 +65,7 @@ router.post('/youtube-to-spotify', async (req, res) => {
 
         // Adding tracks
         if (matchedTrackUris.length > 0) {
-            await fetch(`https://api.spotify.com/v1/playlists/${newSpotifyPlaylistId}/tracks`, {
+            await fetch(`https://api.spotify.com/v1/playlists/${newSpotifyPlaylistId}/items`, {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${spotifyToken}`,

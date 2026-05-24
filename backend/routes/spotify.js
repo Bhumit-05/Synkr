@@ -57,10 +57,10 @@ router.get("/playlists/:playlistId/tracks", async (req, res) => {
     const playlistId = req.params.playlistId;
 
     try {
-        const spotifyRes = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
+        const spotifyRes = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/items`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
         });
 
         if (!spotifyRes.ok) {
@@ -112,15 +112,15 @@ router.delete('/deleteTrack', async (req, res) => {
     }
 
     try {
-        const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
+        const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/items`, {
                 method: 'DELETE',
                 headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            },
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify({
-                tracks: [{ uri: `spotify:track:${trackId}` }]
-            })
+                    items: [{ uri: `spotify:track:${trackId}` }]
+                })
         });
 
         const data = await response.json();
@@ -173,7 +173,7 @@ router.post('/addToPlaylist', async (req, res) => {
         return res.status(400).json({ error: 'Missing required parameters' });
     }
 
-    const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
+    const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/items`, {
         method: 'POST',
         headers: {
             Authorization: `Bearer ${token}`,

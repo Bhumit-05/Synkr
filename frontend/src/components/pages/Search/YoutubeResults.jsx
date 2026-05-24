@@ -87,7 +87,7 @@ const YouTubeResults = ({ tracks }) => {
                     </a>
                     <button
                       onClick={() => handleAddClick(item)}
-                      className="px-3 py-2 w-[48%] bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition">
+                      className="hover:cursor-pointer px-3 py-2 w-[48%] bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition">
                       + Add to playlist
                     </button>
                   </div>

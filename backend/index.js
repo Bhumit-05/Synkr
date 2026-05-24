@@ -15,9 +15,8 @@ const app = express();
 app.use(express.json());
 
 app.use(cors({
-  origin: 'https://synkr-xi.vercel.app',
-  credentials: true,
-  methods: ['GET', 'POST', 'OPTIONS'],
+  origin: 'http://localhost:5173', 
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 

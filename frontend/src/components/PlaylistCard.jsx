@@ -20,7 +20,7 @@ const PlaylistCard = ({ playlist, selected, accentColor, platform, id, onSelect 
 
   return (
     <div
-      onClick={onSelect} // Only select on card click
+      onClick={onSelect}
       className={`mt-2 flex items-center gap-4 p-3 rounded-lg bg-slate-900/50 hover:bg-slate-900/70 transition cursor-pointer ${
         selected ? `${accentColor} ring-2` : ''
       }`}
