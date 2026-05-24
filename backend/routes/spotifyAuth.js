@@ -76,27 +76,36 @@ router.get('/callback', async (req, res) => {
 router.post('/refresh', async (req, res) => {
     const { refreshToken } = req.body;
 
-    try {
-        const response = await fetch('https://accounts.spotify.com/api/token', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: querystring.stringify({
-                grant_type: 'refresh_token',
-                refresh_token: refreshToken,
-                client_id: CLIENT_ID,
-                client_secret: CLIENT_SECRET,
-            }),
-        });
+    const credentials = Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString('base64');
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            console.error('Spotify token refresh failed:', errorData);
-            return res.status(500).json({ error: 'Failed to refresh token' });
-        }
+    try {
+        const response = await fetch(
+            'https://accounts.spotify.com/api/token',
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type':
+                        'application/x-www-form-urlencoded',
+                    Authorization: `Basic ${credentials}`,
+                },
+                body: new URLSearchParams({
+                    grant_type: 'refresh_token',
+                    refresh_token: refreshToken,
+                }),
+            }
+        );
 
         const data = await response.json();
+
+        if (!response.ok) {
+            console.error('Spotify token refresh failed:', data);
+
+            return res.status(response.status).json({
+                error: 'Failed to refresh token',
+                spotifyError: data,
+            });
+        }
+
         const { access_token } = data;
 
         res.send({ access_token });
