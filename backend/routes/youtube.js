@@ -59,7 +59,7 @@ router.get('/playlists', async (req, res) => {
     }
 });
 
-router.get("/playlists/:playlistId/items", async (req, res) => {
+router.get("/playlists/:playlistId/tracks", async (req, res) => {
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) return res.status(401).json({ error: 'Missing token' });
 
