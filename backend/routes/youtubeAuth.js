@@ -61,7 +61,7 @@ router.get('/callback', async (req, res) => {
             return res.status(400).send('Access token missing');
         }
 
-        const redirectUrl = `https://synkr-vtpk.onrender.com/youtube/callback?access_token=${access_token || 'none'}&refresh_token=${refresh_token || 'none'}`;
+        const redirectUrl = `https://synkr-xi.vercel.app/youtube/callback?access_token=${access_token || 'none'}&refresh_token=${refresh_token || 'none'}`;
         res.redirect(redirectUrl)
 
     } catch (err) {
