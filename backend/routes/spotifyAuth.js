@@ -76,6 +76,12 @@ router.get('/callback', async (req, res) => {
 router.post('/refresh', async (req, res) => {
     const { refreshToken } = req.body;
 
+    console.log({
+        CLIENT_ID: CLIENT_ID?.slice(0, 8),
+        CLIENT_SECRET_EXISTS: !!CLIENT_SECRET,
+        CLIENT_SECRET_LENGTH: CLIENT_SECRET?.length,
+    });
+
     const credentials = Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString('base64');
 
     try {
